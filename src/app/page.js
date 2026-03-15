@@ -1,66 +1,84 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
+
+  const [candidates, setCandidates] = useState([]);
+
+  async function loadCandidates() {
+    const res = await fetch("/api/candidates", { cache: "no-store" });
+    const data = await res.json();
+    setCandidates(data);
+  }
+
+  useEffect(() => {
+    loadCandidates();
+  }, []);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div>
+
+      <h1>Interview Dashboard</h1>
+
+      <div style={{ marginBottom: 20 }}>
+
+        <Link href="/add-candidate">
+          <button style={btn}>Add Candidate</button>
+        </Link>
+
+        <Link href="/leaderboard">
+          <button style={btn}>Leaderboard</button>
+        </Link>
+
+      </div>
+
+      <h3>Candidates</h3>
+
+      <div style={listBox}>
+
+        {candidates.length === 0 && (
+          <p>No candidates yet</p>
+        )}
+
+        {candidates.map((c) => (
+          <div key={c.id} style={candidateRow}>
+
+            <span>{c.name}</span>
+
+            <Link href={`/candidate/${c.name}`}>
+              <button style={btnSmall}>Evaluate</button>
+            </Link>
+
+          </div>
+        ))}
+
+      </div>
+
     </div>
   );
 }
+
+const btn = {
+  padding: "8px 14px",
+  marginRight: 10,
+  cursor: "pointer"
+};
+
+const btnSmall = {
+  padding: "6px 12px",
+  cursor: "pointer"
+};
+
+const listBox = {
+  background: "white",
+  padding: 20,
+  borderRadius: 8
+};
+
+const candidateRow = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginBottom: 10
+};
