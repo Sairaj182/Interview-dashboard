@@ -9,7 +9,7 @@ export default function CandidatePage() {
   const params = useParams();
   const router = useRouter();
 
-  const name = params.name;
+  const name = decodeURIComponent(params.name);
 
   const [commScore, setCommScore] = useState(0);
   const [reactScore, setReactScore] = useState(0);
@@ -34,10 +34,9 @@ export default function CandidatePage() {
       })
     });
 
-    alert("Score saved");
-
     router.push("/leaderboard");
   }
+
   useEffect(() => {
 
     function handleKey(e) {
@@ -53,9 +52,12 @@ export default function CandidatePage() {
     return () => window.removeEventListener("keydown", handleKey);
 
   }, [commScore, reactScore, expressScore, dsaScore, notes]);
+
   return (
     <div>
+
       <QuestionGenerator />
+
       <h2>Candidate: {name}</h2>
 
       <div style={box}>
@@ -67,12 +69,13 @@ export default function CandidatePage() {
 
         <textarea
           placeholder="Notes"
+          value={notes}
           onChange={(e)=>setNotes(e.target.value)}
           style={textarea}
         />
 
         <button onClick={saveScore} style={btn}>
-          Save Score
+          Save Score (Ctrl + Enter)
         </button>
 
       </div>
@@ -116,19 +119,19 @@ const box = {
   background:"white",
   padding:25,
   borderRadius:8
-}
+};
 
 const textarea = {
   width:"100%",
   height:90,
   marginTop:10,
   marginBottom:15
-}
+};
 
 const btn = {
   padding:"10px 16px",
   cursor:"pointer"
-}
+};
 
 const scoreBtn = {
   marginRight:6,
@@ -136,4 +139,4 @@ const scoreBtn = {
   cursor:"pointer",
   border:"none",
   borderRadius:4
-}
+};

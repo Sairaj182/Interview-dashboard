@@ -6,12 +6,7 @@ export async function POST(req) {
   await sequelize.sync();
 
   const data = await req.json();
-  if (!data.name) {
-    return Response.json(
-      { error: "Candidate name missing" },
-      { status: 400 }
-    );
-  }
+
   await Candidate.update(
     {
       commScore: data.commScore,
@@ -21,13 +16,12 @@ export async function POST(req) {
       notes: data.notes
     },
     {
-      where: { name: data.name }
+      where: {
+        name: data.name
+      }
     }
   );
 
-  const updated = await Candidate.findOne({
-    where: { name: data.name }
-  });
+  return Response.json({ success: true });
 
-  return Response.json(updated);
 }
