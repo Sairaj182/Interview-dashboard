@@ -10,7 +10,6 @@ if (!global.sequelize) {
     process.env.DB_PASS,
     {
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
       dialect: "mysql",
       dialectModule: require("mysql2"),
       logging: false
